@@ -1,6 +1,29 @@
-# Unity Remote Server Scripts
+# Unity Remote Server Example Scripts
 
-This directory contains utility scripts for controlling Unity via Remote Server API.
+These are **example scripts** that demonstrate how to control Unity via Remote Server API from outside your Unity project.
+
+## ⚠️ Important: Where to Use These Scripts
+
+**These scripts should NOT be placed inside your Unity project's Assets folder.**
+
+Instead, use them:
+- 📁 **In your CI/CD pipeline** (GitHub Actions, Jenkins, etc.)
+- 📁 **On your build server** 
+- 📁 **In a separate automation directory**
+- 📁 **In your project root** (outside Assets folder)
+
+Example project structure:
+```
+YourUnityProject/
+├── Assets/           # Unity assets (Don't put scripts here)
+├── Library/
+├── ProjectSettings/
+├── Packages/
+└── BuildScripts/     # Put automation scripts here ✅
+    ├── unity-build.sh
+    ├── unity-monitor.sh
+    └── unity-control.py
+```
 
 ## Shell Scripts
 

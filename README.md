@@ -56,6 +56,8 @@ curl http://127.0.0.1:8787/health
 # Response: {"ok":true,"version":"1.0.0"}
 ```
 
+> **📁 Note:** Example automation scripts are provided in `Examples/Scripts/` directory. These should be used **outside** your Unity project (in CI/CD pipelines, build servers, etc.)
+
 ### Basic Usage
 
 ```bash

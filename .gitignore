@@ -37,4 +37,4 @@ Desktop.ini
 # Build artifacts
 *.unitypackage
 exports/
-build/
+build/wiki-new/
