@@ -1,0 +1,65 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Create Release Archive
+        run: |
+          # Create package directory
+          mkdir -p release/com.dsgarage.unity-remote-server
+          
+          # Copy package files
+          cp -r Editor release/com.dsgarage.unity-remote-server/
+          cp -r Runtime release/com.dsgarage.unity-remote-server/
+          cp -r Samples~ release/com.dsgarage.unity-remote-server/
+          cp -r Documentation~ release/com.dsgarage.unity-remote-server/
+          cp package.json release/com.dsgarage.unity-remote-server/
+          cp package.json.meta release/com.dsgarage.unity-remote-server/
+          cp *.md release/com.dsgarage.unity-remote-server/
+          cp LICENSE* release/com.dsgarage.unity-remote-server/
+          cp *.asmdef* release/com.dsgarage.unity-remote-server/ 2>/dev/null || true
+          
+          # Create archives
+          cd release
+          zip -r ../UnityRemoteServer-${GITHUB_REF_NAME}.zip com.dsgarage.unity-remote-server
+          tar -czf ../UnityRemoteServer-${GITHUB_REF_NAME}.tar.gz com.dsgarage.unity-remote-server
+          cd ..
+          
+      - name: Create Unity Package
+        run: |
+          # This would require Unity to create .unitypackage
+          # For now, we'll just note it in the release
+          echo "Unity package creation would happen here"
+
+      - name: Extract version and changelog
+        id: extract
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          
+          # Extract changelog for this version
+          awk '/^## \['"$VERSION"'\]/,/^## \[/' CHANGELOG.md | sed '$d' > release_notes.md || echo "Release $VERSION" > release_notes.md
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            UnityRemoteServer-*.zip
+            UnityRemoteServer-*.tar.gz
+          body_path: release_notes.md
+          name: Unity Remote Server ${{ steps.extract.outputs.version }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true

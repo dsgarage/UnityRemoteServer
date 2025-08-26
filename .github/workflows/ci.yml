@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Validate package.json
+        run: |
+          # Check if package.json is valid JSON
+          python -m json.tool package.json > /dev/null
+          echo "✓ package.json is valid"
+          
+      - name: Check version format
+        run: |
+          VERSION=$(grep '"version"' package.json | cut -d'"' -f4)
+          if [[ $VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "✓ Version format is valid: $VERSION"
+          else
+            echo "✗ Invalid version format: $VERSION"
+            exit 1
+          fi
+          
+      - name: Verify required files
+        run: |
+          required_files=(
+            "package.json"
+            "README.md"
+            "LICENSE.md"
+            "CHANGELOG.md"
+            "Editor/RemoteServer.cs"
+            "Editor/LogStore.cs"
+            "Editor/RemoteOps.cs"
+          )
+          
+          for file in "${required_files[@]}"; do
+            if [ -f "$file" ]; then
+              echo "✓ $file exists"
+            else
+              echo "✗ $file is missing"
+              exit 1
+            fi
+          done
+
+  code-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Check line endings
+        run: |
+          # Ensure consistent line endings
+          find . -name "*.cs" -type f -exec dos2unix {} \; 2>/dev/null || true
+          
+      - name: Check for debug code
+        run: |
+          # Check for common debug patterns
+          if grep -r "Debug.Log(\|Console.WriteLine(" Editor/*.cs --include="*.cs" | grep -v "//"; then
+            echo "Warning: Debug code found (non-critical)"
+          fi
+          
+      - name: Validate namespaces
+        run: |
+          # Ensure consistent namespace
+          if grep -r "namespace" Editor/*.cs | grep -v "DSGarage.UnityRemoteServer"; then
+            echo "Warning: Inconsistent namespace found"
+          fi

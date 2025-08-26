@@ -1,0 +1,36 @@
+{
+  "name": "com.dsgarage.unity-remote-server",
+  "version": "1.0.0",
+  "displayName": "Unity Remote Server",
+  "description": "HTTP server for Unity Editor remote control and automation. Provides REST API endpoints for compilation, asset management, and editor operations.",
+  "unity": "2020.3",
+  "documentationUrl": "https://github.com/dsgarage/unity-remote-server",
+  "changelogUrl": "https://github.com/dsgarage/unity-remote-server/blob/main/CHANGELOG.md",
+  "licensesUrl": "https://github.com/dsgarage/unity-remote-server/blob/main/LICENSE.md",
+  "keywords": [
+    "remote",
+    "server",
+    "automation",
+    "http",
+    "api",
+    "editor"
+  ],
+  "author": {
+    "name": "DS Garage",
+    "email": "support@dsgarage.com",
+    "url": "https://dsgarage.com"
+  },
+  "dependencies": {},
+  "samples": [
+    {
+      "displayName": "Basic Integration",
+      "description": "Basic setup and usage examples",
+      "path": "Samples~/BasicIntegration"
+    },
+    {
+      "displayName": "CLI Tools",
+      "description": "Command-line tools for remote control",
+      "path": "Samples~/CLITools"
+    }
+  ]
+}
